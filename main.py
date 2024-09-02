@@ -8,6 +8,7 @@
 
 import pandas as pd 
 import numpy as np 
+from datetime import datetime
 
 
 
@@ -65,6 +66,13 @@ def same_location(df):# This function checks if the location of the job is the s
     print(df["same_location"])
 
 
+def company_age(df):
+    df["Founded"] = pd.to_numeric(df["Founded"])
+    current_date = datetime.now().year
+    df["company_age"] = int(current_date) - df["Founded"]
+    df["company_age"] = df["company_age"].replace(2025, None)
+
+
 
 
 
@@ -77,6 +85,7 @@ def clean_data(df):
     avg_salary(df)
     job_state(df)
     same_location(df)
+    company_age(df)
 
 path = "Uncleaned_DS_jobs.csv"
 
