@@ -26,10 +26,7 @@ def strip_salaries(df):
         salary = salary.strip(" (Employer est.) (Glassdoor est.)")#
         salary = salary.replace("K","")
         salary = salary.replace("$", "")
-        print(salary)
         df.at[index, "Salary Estimate"] = salary
-
-    return df 
 
 
 def create_min_max(df):
@@ -45,13 +42,47 @@ def create_min_max(df):
 
 
 
+def avg_salary(df):
+    df["min_salary"] = pd.to_numeric(df["min_salary"])
+    df["max_salary"] = pd.to_numeric(df["max_salary"])
+    df["average_salary"] = (df["min_salary"]) + (df["max_salary"]) / 2
+
+
+
+def job_state(df):
+    states = []
+    for location in df["Location"].iteritems():
+        try:
+            state = location[1].split(",")[1]
+        except:
+            state = None
+        states.append(state)
+    df.insert(15,"job_state",states,True)
+
+
+def same_location(df):# This function checks if the location of the job is the same as headquaters location
+    df["same_location"] = (df["Location"]== df["Headquarters"])
+    print(df["same_location"])
+
+
+
+
+
+
+def clean_data(df):
+    strip_salaries(df)
+    remove_index_column(df)
+    strip_salaries(df)
+    create_min_max(df)
+    avg_salary(df)
+    job_state(df)
+    same_location(df)
+
 path = "Uncleaned_DS_jobs.csv"
 
 
 df = get_pandas_object_from_csv(path)
 
 
-remove_index_column(df)
-df =strip_salaries(df)
-create_min_max(df)
+clean_data(df)
 print(df)
